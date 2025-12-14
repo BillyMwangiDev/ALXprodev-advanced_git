@@ -1,0 +1,27 @@
+#!/bin/bash
+# Post-merge hook: Log merges into main branch
+
+MERGE_LOG=".git/merge.log"
+CURRENT_BRANCH=$(git rev-parse --abbrev-ref HEAD)
+
+echo "Running post-merge hook..."
+
+# Check if we're on the main branch
+if [ "$CURRENT_BRANCH" = "main" ]; then
+    echo "========================================" >> "$MERGE_LOG"
+    echo "MERGE LOG ENTRY" >> "$MERGE_LOG"
+    echo "Date: $(date)" >> "$MERGE_LOG"
+    echo "Branch: $CURRENT_BRANCH" >> "$MERGE_LOG"
+    echo "User: $(git config user.name) <$(git config user.email)>" >> "$MERGE_LOG"
+    echo "Commit: $(git rev-parse HEAD)" >> "$MERGE_LOG"
+    echo "Message: $(git log -1 --pretty=%B)" >> "$MERGE_LOG"
+    echo "========================================" >> "$MERGE_LOG"
+    echo ""
+    
+    echo "Merge into main branch logged to $MERGE_LOG"
+else
+    echo "Not on main branch. Merge not logged."
+fi
+
+echo "Post-merge hook completed."
+exit 0
